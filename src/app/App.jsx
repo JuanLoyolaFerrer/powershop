@@ -1,100 +1,9 @@
 import { useState } from 'react';
 import './App.css';
 import products from "../components/products/productList/productList.jsx";
+// Importa desde la carpeta cart directamente
+import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
 
-// Componente Cart
-function Cart({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem }) {
-  if (!isOpen) return null;
-
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const handleOverlayClick = (e) => {
-    if (e.target.className === 'cart-overlay') {
-      onClose();
-    }
-  };
-
-  return (
-    <div className="cart-overlay" onClick={handleOverlayClick}>
-      <div className="cart-modal">
-        <div className="cart-header">
-          <h2>🛒 Tu Carrito</h2>
-          <button className="close-btn" onClick={onClose}>✕</button>
-        </div>
-
-        <div className="cart-content">
-          {cartItems.length === 0 ? (
-            <div className="empty-cart">
-              <p className="empty-icon">🛒</p>
-              <p>Tu carrito está vacío</p>
-              <p className="empty-subtitle">¡Agrega productos para comenzar!</p>
-            </div>
-          ) : (
-            <>
-              <div className="cart-items">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="cart-item">
-                    <div className="item-image">{item.image}</div>
-                    <div className="item-details">
-                      <h4>{item.name}</h4>
-                      <p className="item-price">${item.price}</p>
-                    </div>
-                    <div className="item-actions">
-                      <div className="quantity-controls">
-                        <button
-                          className="qty-btn"
-                          onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                        >
-                          -
-                        </button>
-                        <span className="quantity">{item.quantity}</span>
-                        <button
-                          className="qty-btn"
-                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <button
-                        className="remove-btn"
-                        onClick={() => onRemoveItem(item.id)}
-                        title="Eliminar producto"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="cart-summary">
-                <div className="summary-row">
-                  <span>Subtotal:</span>
-                  <span>${calculateTotal().toFixed(2)}</span>
-                </div>
-                <div className="summary-row">
-                  <span>Envío:</span>
-                  <span className="free-shipping">Gratis</span>
-                </div>
-                <div className="summary-row total">
-                  <span>Total:</span>
-                  <span>${calculateTotal().toFixed(2)}</span>
-                </div>
-                <button className="checkout-btn">
-                  Proceder al Pago
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Componente principal App
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -148,13 +57,12 @@ function App() {
 
   return (
     <div className="app">
-
       {/* Header */}
       <header className="header">
         <div className="header-container">
           <div className="logo">
             <span className="logo-icon">🛒</span>
-            <h1>TechStore</h1>
+            <h1>Powershop</h1>
           </div>
 
           <div className="search-bar">
@@ -181,8 +89,8 @@ function App() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h2>Las Mejores Ofertas en Tecnología</h2>
-          <p>Descubre productos de alta calidad con envío gratis</p>
+          <h2>Las Mejores Ofertas en Superpoderes!</h2>
+          <p>Atrévete a ver el mundo con una perspectiva que no imaginas!</p>
           <button className="cta-btn">Ver Ofertas</button>
         </div>
       </section>
@@ -231,7 +139,7 @@ function App() {
       </section>
 
       {/* Cart Modal */}
-      <Cart
+      <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cartItems}
