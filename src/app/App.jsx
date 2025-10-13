@@ -101,7 +101,7 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Todos');
 
-  const categories = ['Todos', 'Electrónica', 'Audio', 'Wearables', 'Fotografía', 'Accesorios'];
+  const categories = ['Todos', 'Telekinesis', 'Elementales', 'Velocidad', 'Fuerza', 'Invisibilidad', 'Teletransportación'];
 
   const addToCart = (product) => {
     setCartItems(prevItems => {
