@@ -2,7 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Home from "../pages/home.jsx";
 import ProductDetail from "../components/products/productDetail/productDetail.jsx";
-import Checkout from "../pages/checkout.jsx";
+import Checkout from "../pages/checkout.jsx"
+import Login from '../pages/login';
+import Registro from '../pages/register.jsx';
+import RecuperarContraseña from '../pages/forgotPassword';
 import "./App.css";
 
 function App() {
@@ -92,6 +95,12 @@ function App() {
               />
             }
           />
+          <Route path="/login" element={<Login />} />
+
+          <Route path="/registro" element={<Registro />} />
+
+          <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+
         </Routes>
       </div>
     </Router>
