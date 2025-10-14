@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import products from "../components/products/productList/productList.jsx";
 import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
 
@@ -11,6 +11,14 @@ function Home() {
     const itemsPerPage = 12;
 
     const categories = ['Todos', 'Telekinesis', 'Elementales', 'Velocidad', 'Fuerza', 'Invisibilidad', 'Teletransportación'];
+
+    // Obtener productos destacados
+    const featuredProducts = products.filter(product => product.featured === true);
+
+    // Resetear a página 1 cuando cambien los filtros
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, selectedCategory]);
 
     // Función para agregar al carrito
     const addToCart = (product) => {
@@ -86,11 +94,6 @@ function Home() {
         }
     };
 
-    // Resetear a página 1 cuando cambien los filtros
-    useState(() => {
-        setCurrentPage(1);
-    }, [searchTerm, selectedCategory]);
-
     return (
         <div className="app">
             {/* Header */}
@@ -131,6 +134,34 @@ function Home() {
                 </div>
             </section>
 
+            {/* Featured Products Section */}
+            {featuredProducts.length > 0 && (
+                <section className="featured-section">
+                    <div className="container">
+                        <h3>⭐ Productos Destacados</h3>
+                        <div className="featured-products-scroll">
+                            {featuredProducts.map(product => (
+                                <div key={product.id} className="product-card featured-card">
+                                    <div className="featured-badge">Destacado</div>
+                                    <div className="product-image">{product.image}</div>
+                                    <div className="product-info">
+                                        <span className="product-category">{product.category}</span>
+                                        <h4>{product.name}</h4>
+                                        <p className="product-price">${product.price}</p>
+                                        <button
+                                            className="add-to-cart-btn"
+                                            onClick={() => addToCart(product)}
+                                        >
+                                            Agregar al Carrito
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Categories */}
             <section className="categories-section">
                 <div className="container">
@@ -152,7 +183,7 @@ function Home() {
             {/* Products Grid */}
             <section className="products-section">
                 <div className="container">
-                    <h3>Productos Destacados</h3>
+                    <h3>Todos los Productos</h3>
 
                     {/* Información de paginación */}
                     <div className="pagination-info">
@@ -165,6 +196,7 @@ function Home() {
                     <div className="products-grid">
                         {getCurrentPageProducts().map(product => (
                             <div key={product.id} className="product-card">
+                                {product.featured && <div className="featured-badge">Destacado</div>}
                                 <div className="product-image">{product.image}</div>
                                 <div className="product-info">
                                     <span className="product-category">{product.category}</span>
