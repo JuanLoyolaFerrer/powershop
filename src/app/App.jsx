@@ -46,7 +46,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route
-            path="/"
+            path="/home"
             element={
               <Home
                 cartItems={cartItems}

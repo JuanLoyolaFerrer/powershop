@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import products from "../components/products/productList/productList.jsx";
 import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
+import categories from "./category.jsx";
 
 function Home() {
     const [cartItems, setCartItems] = useState([]);
@@ -11,7 +12,6 @@ function Home() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
-    const categories = ['Todos', 'Telekinesis', 'Elementales', 'Velocidad', 'Fuerza', 'Invisibilidad', 'Teletransportación'];
 
     // Obtener productos destacados
     const featuredProducts = products.filter(product => product.featured === true);
