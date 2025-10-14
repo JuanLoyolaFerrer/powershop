@@ -6,7 +6,9 @@ import Checkout from "../pages/checkout.jsx"
 import Login from '../pages/login';
 import Registro from '../pages/register.jsx';
 import RecuperarContraseña from '../pages/forgotPassword';
+import CompraFinalizada from '../pages/orderSuccess';
 import "./App.css";
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -87,6 +89,8 @@ function App() {
           <Route path="/registro" element={<Registro />} />
 
           <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
+          
+          <Route path="/Compra-Finalizada" element={<CompraFinalizada />} />
 
         </Routes>
       </div>
