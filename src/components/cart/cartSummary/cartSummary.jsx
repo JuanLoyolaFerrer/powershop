@@ -1,4 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 function CartSummary({ total }) {
+    const navigate = useNavigate();
+
+    const handleCheckout = () => {
+        navigate('/checkout');
+    };
+
     return (
         <div className="cart-summary">
             <div className="summary-row">
@@ -13,7 +21,10 @@ function CartSummary({ total }) {
                 <span>Total:</span>
                 <span>${total.toFixed(2)}</span>
             </div>
-            <button className="checkout-btn">
+            <button
+                className="checkout-btn"
+                onClick={handleCheckout}
+            >
                 Proceder al Pago
             </button>
         </div>

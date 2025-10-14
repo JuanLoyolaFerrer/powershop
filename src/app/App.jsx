@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import Home from "../pages/home.jsx";  // Cambié "Home" por "home.jsx"
+import Home from "../pages/home.jsx";
 import ProductDetail from "../components/products/productDetail/productDetail.jsx";
-import Checkout from "../pages/checkout.jsx"
+import Checkout from "../pages/checkout.jsx";
 import "./App.css";
 
 function App() {
@@ -46,6 +46,19 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Ruta principal que lleva al home */}
+          <Route
+            path="/"
+            element={
+              <Home
+                cartItems={cartItems}
+                addToCart={addToCart}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            }
+          />
+          {/* Ruta alternativa para home */}
           <Route
             path="/home"
             element={
@@ -68,12 +81,12 @@ function App() {
               />
             }
           />
+          {/* Ruta única para checkout - CORREGIDA */}
           <Route
             path="/checkout"
             element={
               <Checkout
                 cartItems={cartItems}
-                addToCart={addToCart}
                 updateQuantity={updateQuantity}
                 removeItem={removeItem}
               />
