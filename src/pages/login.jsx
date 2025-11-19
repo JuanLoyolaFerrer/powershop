@@ -4,7 +4,7 @@ import usuarios from '../components/user/users-list';
 import './login.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [nombre, setNombre] = useState('');
   const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +15,7 @@ export default function Login() {
     setError('');
 
     const usuario = usuarios.find(
-      (u) => u.name === email && u.contraseña === contraseña
+      (u) => u.name === nombre && u.contraseña === contraseña
     );
 
     if (usuario) {
@@ -36,12 +36,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
-            <label htmlFor="email">Usuario</label>
+            <label htmlFor="nombre">Usuario</label>
             <input
               type="text"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
               placeholder="Ingresa tu usuario"
               required
             />
