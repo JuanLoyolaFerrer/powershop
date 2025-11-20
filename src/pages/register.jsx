@@ -7,7 +7,7 @@ export default function Registro() {
   const [formData, setFormData] = useState({
     name: '',
     lastname: '',
-    email: '',
+    user: '',
     contraseña: '',
     confirmarContraseña: '',
   });
@@ -34,7 +34,7 @@ export default function Registro() {
     if (
       !formData.name ||
       !formData.lastname ||
-      !formData.email ||
+      !formData.user ||
       !formData.contraseña ||
       !formData.confirmarContraseña
     ) {
@@ -52,13 +52,24 @@ export default function Registro() {
       return;
     }
 
-    const usuarioExistente = usuarios.find((u) => u.name === formData.email);
+    const usuarioExistente = usuarios.find((u) => u.user === formData.user);
     if (usuarioExistente) {
       setError('Este usuario ya está registrado');
       return;
     }
 
     setSuccess('¡Registro exitoso! Redirigiendo al login...');
+    ///CREAR EL USUARIO
+    usuarios.push({
+      id: usuarios.length+1,
+      name: formData.name,
+      lastname: formData.lastname,
+      user: formData.user,
+      tipo: "usuario",
+      contraseña: formData.contraseña,
+      featured: false
+    })
+
     setTimeout(() => {
       navigate('/login');
     }, 2000);
@@ -101,12 +112,12 @@ export default function Registro() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Usuario</label>
+            <label htmlFor="Usuario">Usuario</label>
             <input
               type="text"
-              id="email"
-              name="email"
-              value={formData.email}
+              id="Usuario"
+              name="user"
+              value={formData.user}
               onChange={handleChange}
               placeholder="Elige tu usuario"
               required

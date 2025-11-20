@@ -123,7 +123,7 @@ function Home() {
                         <a href="#" className="nav-link">Inicio</a>
                         <a href="#" className="nav-link">Ofertas</a>
                         <Link to="/login">
-                            <User className="size-6 cursor-pointer hover:scale-110 transition-transform duration-200" />
+                            <User stroke="white" className="size-6 cursor-pointer hover:scale-110 transition-transform duration-200" />
                         </Link>
 
 
