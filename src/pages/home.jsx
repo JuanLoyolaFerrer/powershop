@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import products from "../components/products/productList/productList.jsx";
 import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
 import categories from "./category.jsx";
-import { User } from "lucide-react";
-import { Link } from "react-router-dom";
 import UserMenu from '../components/user/userMenuHome.jsx';
 
 

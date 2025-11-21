@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { GetUserLogged } from "../../utils/storage";
 
 function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -10,10 +11,7 @@ function UserMenu() {
   
   // Cerrar menú cuando se hace clic fuera
   useEffect(() => {
-    const raw = localStorage.getItem("usuarioLogueado")
-    if (raw) setUserLogged(JSON.parse(raw))
-    const nuevo = JSON.parse(raw)
-    setUserLogged(nuevo)
+    setUserLogged(GetUserLogged())
 
     const handleClick = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
