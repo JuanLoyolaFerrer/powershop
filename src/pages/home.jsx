@@ -5,6 +5,7 @@ import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
 import categories from "./category.jsx";
 import { User } from "lucide-react";
 import { Link } from "react-router-dom";
+import UserMenu from '../components/user/userMenuHome.jsx';
 
 
 function Home() {
@@ -122,13 +123,7 @@ function Home() {
                     <nav className="nav">
                         <a href="#" className="nav-link">Inicio</a>
                         <a href="#" className="nav-link">Ofertas</a>
-                        <Link to="/login">
-                            <User stroke="white" className="size-6 cursor-pointer hover:scale-110 transition-transform duration-200" />
-                        </Link>
-
-
-
-
+                        <UserMenu/>
                         <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
                             🛒 <span className="cart-badge">{getTotalItems()}</span>
                         </button>

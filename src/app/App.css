@@ -1236,6 +1236,52 @@ body::before {
   letter-spacing: 1px;
 }
 
+/* Boton User Menu */
+.user-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.user-menu-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.user-menu-panel {
+  position: absolute;
+  left: 0;
+  margin-top: 16px;
+
+  width: 130px;
+  background: #25254E;
+  border: 4px solid #fff;
+  border-radius: 8px;
+
+  color: #D0ADF0;
+}
+
+.user-menu-list {
+  list-style: none;
+  padding: 6px 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.user-menu-list li {
+  display: block;
+  padding: 8px 12px;
+}
+
+.user-menu-list a {
+  text-decoration: none;
+}
+
+.user-menu-list p{
+  cursor: pointer;
+}
+
+/* Carta */
 .featured-card .add-to-cart-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(255, 0, 222, 0.6);
