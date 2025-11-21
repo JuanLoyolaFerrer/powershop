@@ -41,13 +41,14 @@ const router = createBrowserRouter([
         </AdminGuard>
       ),
     children: [
-      { path: "categories", element: <AdminCategories /> },
+      { path: "", element: <AdminDashboard /> },
       { path: "dashboard", element: <AdminDashboard /> },
+      { path: "users", element: <AdminUsers /> },
+      { path: "categories", element: <AdminCategories /> },
       { path: "orders", element: <AdminOrders /> },
       { path: "orders/:id", element: <AdminOrderDetail /> },
       { path: "products", element: <AdminProducts /> },
-      { path: "products/:id", element: <AdminProductEdit /> },
-      { path: "users", element: <AdminUsers /> }
+      { path: "products/:id", element: <AdminProductEdit /> }
     ]
   }
 ])

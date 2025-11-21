@@ -142,7 +142,8 @@ body::before {
   border-radius: 25px;
   font-size: 1rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  background: #fffe;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
 }
