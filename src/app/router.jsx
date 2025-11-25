@@ -1,44 +1,56 @@
+// ...importaciones previas
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
 import AdminGuard from "../guards/AdminGuard";
-import AdminLayout from "../components/layout/AdminLayout"; // tu layout
-// Páginas Admin
-import AdminDashboard from "../pages/admin/Dashboard";      // (14)
-import Users from "../pages/admin/users";                   // (15)
-import Orders from "../pages/admin/orders";                 // (20)
-import OrderDetail from "../pages/admin/orderDetail";       // (21)
-import Products from "../pages/admin/Products";             // (17)
-import ProductEdit from "../pages/admin/ProductEdit";       // (19)
-import Categories from "../pages/admin/Categories";         // (22)
-import CategoryAdd from "../pages/admin/CategoryAdd";       // (23)
-import Login from "../pages/login";
+import AdminLayout from "../components/layout/adminLayout";
+import MainLayout from "../components/layout/mainLayout";
+import Home from "../pages/home"
+import Login from "../pages/login"
+import AdminUsers from "../pages/admin/users";
+import AdminOrders from "../pages/admin/orders";
+import ProductDetail from "../components/products/productDetail/productDetail";
+import Checkout from "../pages/checkout";
+import Registro from "../pages/register";
+import RecuperarContraseña from "../pages/forgotPassword";
+import OrderSuccess from "../pages/orderSuccess";
+import AdminOrderDetail from "../pages/admin/orderDetail";
+import AdminProducts from "../pages/admin/products";
+import AdminProductEdit from "../pages/admin/productEdit";
+import AdminDashboard from "../pages/admin/dashboard";
+import AdminCategories from "../pages/admin/categories";
 
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
-    element: <App />,
+    path: "/",
+    element: <MainLayout />,
     children: [
-      { path: "/login", element: <Login /> },
-      // …rutas públicas (home, etc.)
-      {
-        element: <AdminGuard />, // 👈 protege todo lo de admin
-        children: [
-          {
-            path: "/admin",
-            element: <AdminLayout />,
-            children: [
-              { index: true, element: <AdminDashboard /> },   // 14
-              { path: "users", element: <Users /> },          // 15–16 (usa lo que ya te di)
-              { path: "orders", element: <Orders /> },        // 20
-              { path: "orders/:id", element: <OrderDetail /> },
-              { path: "products", element: <Products /> },    // 17
-              { path: "products/:id", element: <ProductEdit /> }, // 19
-              { path: "categories", element: <Categories /> },    // 22
-              { path: "categories/new", element: <CategoryAdd /> } // 23
-            ]
-          }
-        ]
-      }
+      { path: "", element: <Home /> },
+      { path: "home", element: <Home /> },
+      { path: "login", element:<Login />},
+      { path: "registro", element:<Registro />},
+      { path: "recuperar-contraseña", element:<RecuperarContraseña />},
+      { path: "product/:id", element:<ProductDetail />},
+      { path: "checkout", element:<Checkout />},
+      { path: "compra-finalizada", element:<OrderSuccess />}
+    ]
+  },
+  {
+    path: "/admin",
+      element: (
+        <AdminGuard>
+            <AdminLayout />
+        </AdminGuard>
+      ),
+    children: [
+      { path: "", element: <AdminDashboard /> },
+      { path: "dashboard", element: <AdminDashboard /> },
+      { path: "users", element: <AdminUsers /> },
+      { path: "categories", element: <AdminCategories /> },
+      { path: "orders", element: <AdminOrders /> },
+      { path: "orders/:id", element: <AdminOrderDetail /> },
+      { path: "products", element: <AdminProducts /> },
+      { path: "products/:id", element: <AdminProductEdit /> }
     ]
   }
-]);
+])
 
+export default router

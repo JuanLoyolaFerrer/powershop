@@ -16,12 +16,13 @@ const getRegisteredUsers = () => {
 };
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [user, setUser] = useState('');
   const [contraseña, setContraseña] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  //Iniciar sesion
   const handleLogin = (e) => {
     e.preventDefault();
     setError('');
@@ -62,12 +63,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
-            <label htmlFor="email">Usuario</label>
+            <label htmlFor="user">Usuario</label>
             <input
               type="text"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="user"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
               placeholder="Ingresa tu usuario"
               required
             />

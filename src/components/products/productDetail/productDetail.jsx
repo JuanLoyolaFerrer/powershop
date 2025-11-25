@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useCart } from '../../../hooks/useCart.jsx';
 import products from "../productList/productList.jsx";
 
-function ProductDetail({ cartItems, onAddToCart, onUpdateQuantity }) {
+function ProductDetail() {
+    // Función para el carrito
+    const { addToCart } = useCart();
+
     const { id } = useParams();
     const navigate = useNavigate();
     const [quantity, setQuantity] = useState(1);
@@ -28,7 +32,7 @@ function ProductDetail({ cartItems, onAddToCart, onUpdateQuantity }) {
 
     const handleAddToCart = () => {
         for (let i = 0; i < quantity; i++) {
-            onAddToCart(product);
+            addToCart(product);
         }
         setShowAddedMessage(true);
         setTimeout(() => setShowAddedMessage(false), 3000);

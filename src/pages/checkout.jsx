@@ -3,17 +3,19 @@ import { CreditCard, Lock, ShoppingCart, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { userService } from '../services/user.service'
 import { orderService } from "../services/order.service";
-
+import { useCart } from '../hooks/useCart'
 import '../pages/checkout.css'
 
 export default function Checkout() {
+  // Función para el carrito
+  const { cartItems, updateQuantity, removeItem } = useCart();
   const navigate = useNavigate()
 
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'Laptop Pro 15"', price: 1299.99, quantity: 1, image: '💻' },
-    { id: 2, name: 'Mouse Inalámbrico', price: 29.99, quantity: 2, image: '🖱️' },
-    { id: 3, name: 'Teclado Mecánico', price: 89.99, quantity: 1, image: '⌨️' }
-  ])
+  // const [cartItems, setCartItems] = useState([
+  //   { id: 1, name: 'Laptop Pro 15"', price: 1299.99, quantity: 1, image: '💻' },
+  //   { id: 2, name: 'Mouse Inalámbrico', price: 29.99, quantity: 2, image: '🖱️' },
+  //   { id: 3, name: 'Teclado Mecánico', price: 89.99, quantity: 1, image: '⌨️' }
+  // ])
 
   const [formData, setFormData] = useState({
     email: '',
@@ -32,17 +34,6 @@ export default function Checkout() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return
-    setCartItems(items =>
-      items.map(item => item.id === id ? { ...item, quantity: newQuantity } : item)
-    )
-  }
-
-  const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id))
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -85,10 +76,10 @@ export default function Checkout() {
 
     // 5) Simular procesamiento de pago y redirigir
     setTimeout(() => {
-      setIsProcessing(false);
-      navigate("/Compra-Finalizada");
-    }, 2000);
-  };
+      setIsProcessing(false)
+      navigate('/compra-finalizada')
+    }, 2000)
+  }
 
   return (
     <>

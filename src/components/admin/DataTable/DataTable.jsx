@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function DataTable({ columns = [], rows = [], empty = "Sin datos" }) {
   return (
     <table style={{ width: "100%", borderCollapse: "collapse" }} border="1" cellPadding="6">
