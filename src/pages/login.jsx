@@ -47,7 +47,8 @@ export default function Login() {
 
     if (usuario) {
       localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
-      navigate('/home');
+      if (usuario.tipo === "administrador") navigate('/admin');
+      else navigate('/home');
     } else {
       setError('Usuario o contraseña incorrectos');
     }
