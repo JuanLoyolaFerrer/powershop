@@ -3,6 +3,7 @@ import AdminLayout from "@components/layout/adminLayout";
 import MainLayout from "@components/layout/mainLayout";
 import ProductDetail from "@components/products/productDetail/productDetail";
 import AdminGuard from "@guards/AdminGuard";
+import AuthGuard from "@guards/AuthGuard";
 import AdminCategories from "@pages/admin/categories";
 import AdminDashboard from "@pages/admin/dashboard";
 import AdminOrderDetail from "@pages/admin/orderDetail";
@@ -31,26 +32,19 @@ const router = createBrowserRouter([
       { path: "login", element:<Login />},
       { path: "registro", element:<Registro />},
       { path: "recuperar-contraseña", element:<RecuperarContraseña />},
-      { path: "product/:id", element:<ProductDetail />},
-      { path: "checkout", element:<Checkout />},
-      { path: "compra-finalizada", element:<OrderSuccess />}
+      { path: "product/:id", element:<ProductDetail />}
     ]
   },
   {
     path: "/",
     element: (
-      <MainLayout />
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
     ),
     children: [
-      { path: "", element: <Home /> },
-      { path: "home", element: <Home /> },
-      { path: "login", element:<Login />},
-      { path: "registro", element:<Registro />},
-      { path: "recuperar-contraseña", element:<RecuperarContraseña />},
-      { path: "product/:id", element:<ProductDetail />},
       { path: "checkout", element:<Checkout />},
       { path: "compra-finalizada", element:<OrderSuccess />},
-      { path: "*", element:<NotFound />}
     ]
   },
   {
