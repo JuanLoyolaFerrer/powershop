@@ -3,8 +3,8 @@ import products from "../components/products/productList/productList.jsx";
 import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
 import categories from "./category.jsx";
 import UserMenu from '../components/user/userMenuHome.jsx';
-import { useCart } from '../hooks/useCart.jsx';
-
+import { useCart } from '../hooks/useCart.js';
+import ProductGrid from '../components/products/productGrid.jsx';
 
 function Home() {
     // Función para el carrito
@@ -88,7 +88,7 @@ function Home() {
 
                     <nav className="nav">
                         <a href="#" className="nav-link">Inicio</a>
-                        <a href="#" className="nav-link">Ofertas</a>
+                        <a href="#ofertas" className="nav-link">Ofertas</a>
                         <UserMenu/>
                         <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
                             🛒 <span className="cart-badge">{getTotalItems()}</span>
@@ -103,6 +103,7 @@ function Home() {
                     <h2>Las Mejores Ofertas en Superpoderes!</h2>
                     <p>Atrévete a ver el mundo con una perspectiva que no imaginas!</p>
                     <button className="cta-btn">Ver Ofertas</button>
+                    <p id='ofertas'></p>
                 </div>
             </section>
 
@@ -165,25 +166,8 @@ function Home() {
                         </p>
                     </div>
 
-                    <div className="products-grid">
-                        {getCurrentPageProducts().map(product => (
-                            <div key={product.id} className="product-card">
-                                {product.featured && <div className="featured-badge">Destacado</div>}
-                                <div className="product-image">{product.image}</div>
-                                <div className="product-info">
-                                    <span className="product-category">{product.category}</span>
-                                    <h4>{product.name}</h4>
-                                    <p className="product-price">${product.price}</p>
-                                    <button
-                                        className="add-to-cart-btn"
-                                        onClick={() => addToCart(product)}
-                                    >
-                                        Agregar al Carrito
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    {/* El Grid y las Cards de los productos, aun funciona con la barra */}
+                    <ProductGrid getCurrentPageProducts={getCurrentPageProducts} addToCart={addToCart}/>
 
                     {/* Controles de paginación */}
                     {totalPages > 1 && (

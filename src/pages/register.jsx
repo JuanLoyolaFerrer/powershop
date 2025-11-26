@@ -3,6 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import usuarios from '../components/user/users-list';
 import './register.css';
 
+const LS_REGISTERED = 'ps_registered_users_v1';
+
+const getRegisteredUsers = () => {
+  const raw = localStorage.getItem(LS_REGISTERED);
+  return raw ? JSON.parse(raw) : [];
+};
+
+const saveRegisteredUsers = (list) => {
+  localStorage.setItem(LS_REGISTERED, JSON.stringify(list));
+};
+
 export default function Registro() {
   const [formData, setFormData] = useState({
     name: '',
@@ -52,11 +63,37 @@ export default function Registro() {
       return;
     }
 
-    const usuarioExistente = usuarios.find((u) => u.user === formData.user);
+    // Revisar usuarios base (archivo users-list) – opcional
+    const usuarioExistenteBase = usuarios.find(
+      (u) => (u.user || '').toLowerCase() === formData.user.toLowerCase()
+    );
+    if (usuarioExistenteBase) {
+      setError('Este usuario ya está registrado (lista base)');
+      return;
+    }
+
+    // Revisar usuarios registrados en localStorage
+    const registrados = getRegisteredUsers();
+    const usuarioExistente = registrados.find(
+      (u) => u.username.toLowerCase() === formData.user.toLowerCase()
+    );
     if (usuarioExistente) {
       setError('Este usuario ya está registrado');
       return;
     }
+
+    const nuevoUsuario = {
+      id: `r${registrados.length + 1}`,
+      name: formData.name,
+      lastname: formData.lastname,
+      username: formData.user,       // campo "Usuario" del formulario
+      password: formData.contraseña,  // guardamos la contraseña tal cual (solo para la demo)
+      active: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = [...registrados, nuevoUsuario];
+    saveRegisteredUsers(updated);
 
     setSuccess('¡Registro exitoso! Redirigiendo al login...');
     ///CREAR EL USUARIO
@@ -155,13 +192,15 @@ export default function Registro() {
                 name="confirmarContraseña"
                 value={formData.confirmarContraseña}
                 onChange={handleChange}
-                placeholder="Confirma tu contraseña"
+                placeholder="Repite tu contraseña"
                 required
               />
               <button
                 type="button"
                 className="toggle-password"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
               >
                 {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
               </button>

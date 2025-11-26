@@ -1,11 +1,11 @@
-import { GetUserLogged } from "../utils/storage";
+import useLocalStorage from '@hooks/useLocalStorage';
 import { Navigate } from "react-router-dom";
 
-//Verifica si es admin
-function AdminGuard({ children }) {
+//Verifica si inicio sesion el administrador
+function AuthGuard({ children }) {
+  const {GetUserLogged} = useLocalStorage()
   const logged = GetUserLogged()
-  if (!logged || logged.tipo != "administrador") return <Navigate to="/login" replace />;
-  console.log("Pasaste")
+  if (!logged || logged.tipo !== "administrador") return <Navigate to="/login" replace />;
   return children;
 }
-export default AdminGuard
+export default AuthGuard
