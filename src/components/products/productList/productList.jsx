@@ -1,7 +1,7 @@
 const products = [
     // 🧠 Telekinesis
     { id: 1, name: 'Guantes Psiónicos', price: 1200, category: 'Telekinesis', image: '🧤', featured: false, description: "Descripción opcional del producto" },
-    { id: 2, name: 'Casco Mentalis', price: 2200, category: 'Telekinesis', image: '🪖', featured: false },
+    { id: 2, name: 'Casco Mentalis', price: 2200, category: 'Telekinesis', image: '🎩', featured: false },
     { id: 3, name: 'Píldora Psicoactiva', price: 750, category: 'Telekinesis', image: '💊', featured: false },
     { id: 4, name: 'Anillo de Control Mental', price: 1600, category: 'Telekinesis', image: '💍', featured: false },
     { id: 5, name: 'Cristal de Levitar', price: 1900, category: 'Telekinesis', image: '🔮', featured: false },
