@@ -8,6 +8,10 @@ const cors = require("cors");
 app.use(cors()); // ✅ Esto habilita CORS
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Servidor funcionando ✅");
+});
+
 // Importar rutas modulares
 const categoriasRouters = require("./routes/categorias.js");
 const ordenesRouters = require("./routes/ordenes.js");
