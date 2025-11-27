@@ -1,0 +1,13 @@
+# Crear los modelos
+sequelize-cli model:generate --name Usuario --attributes nombre:string, apellido:string, usuario:string, email:string, password:string, direccion:string, esAdmin:boolean
+
+sequelize-cli model:generate --name Categoria --attributes nombre:string,descripcion:string
+
+sequelize-cli model:generate --name Producto --attributes nombre:string, descripcion:string, precio:decimal, categoriaId:integer, destacado:boolean
+
+sequelize-cli model:generate --name Orden --attributes usuarioId:integer,fecha:date,totalSinIGV:decimal,totalConIGV:decimal
+
+sequelize-cli model:generate --name OrdenProducto --attributes ordenId:integer,productoId:integer,cantidad:integer
+
+# MIGRAR
+sequelize-cli db:migrate
