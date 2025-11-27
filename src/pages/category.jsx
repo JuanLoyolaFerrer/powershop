@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { CreditCard, Lock, ShoppingCart, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { userService } from '../services/user.service'
-import { useCart } from '../hooks/useCart'
+import { useCart } from '@hooks/useCart'
+import useOrders from '@hooks/useOrders'
 import '../pages/checkout.css'
 
 export default function Checkout() {
@@ -23,6 +24,8 @@ export default function Checkout() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+
+  const { CreateOrder }= useOrders()
 
   // Cargar datos del checkout desde localStorage si existen
   useEffect(() => {
@@ -86,20 +89,7 @@ export default function Checkout() {
         items: orderItems
       };
 
-      const orderResponse = await fetch('http://localhost:3000/api/ordenes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderPayload)
-      });
-
-      if (!orderResponse.ok) {
-        const errorData = await orderResponse.json();
-        throw new Error(errorData.error || 'Error al crear la orden');
-      }
-
-      const orderData = await orderResponse.json();
+      const orderData = await CreateOrder(JSON.stringify(orderPayload))
       console.log('Orden creada exitosamente:', orderData);
 
       // 5. Preparar resumen de compra

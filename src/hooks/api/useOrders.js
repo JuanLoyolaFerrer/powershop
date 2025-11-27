@@ -25,5 +25,24 @@ export function useOrders() {
     setOrders(prev => prev.map(o => (o.id === upd.id ? upd : o)));
   };
 
-  return { loading, orders: filtered, setQ, q, cancel };
+  
+  async function CreateOrder(payload) {
+    const orderResponse = await fetch('http://localhost:3000/api/ordenes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload
+    });
+
+    if (!orderResponse.ok) {
+      const errorData = await orderResponse.json();
+      throw new Error(errorData.error || 'Error al crear la orden');
+    }
+
+    const orderData = await orderResponse.json();
+    return orderData
+  }
+
+  return { loading, orders: filtered, setQ, q, cancel, CreateOrder };
 }

@@ -1,6 +1,6 @@
 // src/services/order.service.js
 
-const API_URL = 'http://localhost:3000';
+const URL = 'http://localhost:3000';
 
 export const orderService = {
   /**
@@ -12,7 +12,7 @@ export const orderService = {
    */
   async createOrder(orderData) {
     try {
-      const response = await fetch(`${API_URL}/ordenes`, {
+      const response = await fetch(`${URL}/ordenes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export const orderService = {
    */
   async getAllOrders() {
     try {
-      const response = await fetch(`${API_URL}/ordenes`);
+      const response = await fetch(`${URL}/ordenes`);
 
       if (!response.ok) {
         throw new Error('Error al obtener las órdenes');
@@ -84,7 +84,7 @@ export const orderService = {
    */
   async getOrderById(orderId) {
     try {
-      const response = await fetch(`${API_URL}/ordenes/${orderId}`);
+      const response = await fetch(`${URL}/ordenes/${orderId}`);
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -107,7 +107,7 @@ export const orderService = {
    */
   async deleteOrder(orderId) {
     try {
-      const response = await fetch(`${API_URL}/ordenes/${orderId}`, {
+      const response = await fetch(`${URL}/ordenes/${orderId}`, {
         method: 'DELETE'
       });
 
