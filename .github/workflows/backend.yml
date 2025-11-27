@@ -3,7 +3,7 @@ name: Deploy Express backend to Azure Web App De Veras
 on:
   push:
     branches:
-      - main
+      - backend
   workflow_dispatch:
 
 jobs:
@@ -44,6 +44,6 @@ jobs:
       - name: Deploy backend
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'nombre-backend-app'
+          app-name: 'programacion-web-backend'
           slot-name: 'Production'
           package: ./backend   # Apunta directamente al backend
