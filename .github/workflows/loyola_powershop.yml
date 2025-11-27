@@ -22,10 +22,21 @@ jobs:
           node-version: '22.x'
 
       # Instalar dependencias y construir app
-      - name: Install dependencies and build
+      - name: Install Frontend dependencies and build
         run: |
           npm ci
           npm run build
+
+      # Copiar build al backend
+      - name: Copy frontend build to backend
+        run: |
+          xcopy /E /I /Y dist backend\dist
+    
+      # Instalar dependencias del backend
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
 
       # Listar archivos (opcional, para debugging)
       - name: List files after build
@@ -46,4 +57,4 @@ jobs:
         with:
           app-name: 'proyecto-negocio-de-superpoderes'
           slot-name: 'Production'
-          package: ./dist   # apunta directamente a la carpeta de build
+          package: ./backend   # apunta directamente a la carpeta de build
