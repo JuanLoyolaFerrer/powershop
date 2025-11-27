@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { usePagination } from "../../hooks/usePagination";
+import useProducts from '@hooks/api/useProducts';
 
 export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function AdminProducts() {
   );
 
   const { data, page, pages, setPage, total } = usePagination(filteredProducts, 10);
+  const { GetProducts, DeleteProduct, CreateProducto } = useProducts()
 
   useEffect(() => {
     fetchProducts();
@@ -41,8 +43,9 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/products");
-      const data = await response.json();
+      
+      const data = await GetProducts()
+
       setProducts(data);
     } catch (error) {
       console.error("Error al cargar productos:", error);
@@ -65,9 +68,7 @@ export default function AdminProducts() {
     if (!window.confirm("¿Estás seguro de eliminar este producto?")) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/products/${id}`, {
-        method: "DELETE"
-      });
+      const response = await DeleteProduct(id)
 
       if (response.ok) {
         alert("Producto eliminado correctamente");
@@ -90,17 +91,12 @@ export default function AdminProducts() {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ...formData,
-          precio: parseFloat(formData.precio),
-          categoriaId: parseInt(formData.categoriaId)
-        })
-      });
+      const payload = JSON.stringify({
+        ...formData,
+        precio: parseFloat(formData.precio),
+        categoriaId: parseInt(formData.categoriaId)
+      })
+      const response = await CreateProducto(payload)
 
       if (response.ok) {
         alert("Producto creado correctamente");
@@ -141,20 +137,15 @@ export default function AdminProducts() {
         }
 
         try {
-          const response = await fetch("http://localhost:3000/products", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              nombre,
-              descripcion: descripcion || null,
-              precio: parseFloat(precio),
-              imagen: imagen || null,
-              categoriaId: parseInt(categoriaId),
-              destacado: destacado === 'true' || destacado === '1'
-            })
-          });
+          const payload = JSON.stringify({
+            nombre,
+            descripcion: descripcion || null,
+            precio: parseFloat(precio),
+            imagen: imagen || null,
+            categoriaId: parseInt(categoriaId),
+            destacado: destacado === 'true' || destacado === '1'
+          })
+          const response = CreateProducto(payload)
 
           if (response.ok) {
             created++;

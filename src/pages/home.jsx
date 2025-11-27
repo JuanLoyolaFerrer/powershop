@@ -3,6 +3,7 @@ import { useCart } from '@hooks/useCart.js';
 import CartDrawer from "@components/cart/cartDrawer/cartDrawer.jsx";
 import ProductGrid from '@components/products/productGrid.jsx';
 import PageHeader from '../components/layout/header/header';
+import useProducts from '@hooks/api/useProducts';
 
 function Home() {
     // Estado del carrito
@@ -21,18 +22,15 @@ function Home() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const { GetProducts } = useProducts()
+
     // Cargar productos desde la API
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:3000/products');
-                
-                if (!response.ok) {
-                    throw new Error('Error al cargar los productos');
-                }
-                
-                const data = await response.json();
+
+                const data = await GetProducts()
                 
                 // Transformar los datos de la API al formato esperado
                 const transformedProducts = data.map(producto => ({
