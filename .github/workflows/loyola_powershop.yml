@@ -11,19 +11,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          npm run build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
         with:
           name: react-app
           path: dist
@@ -35,21 +28,17 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: react-app
-
-      - name: Azure login
-        uses: azure/login@v2
+      - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_019D2B324EF046C491DD03CE18314B00 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_46F3BFFB64C243F7B881FBF167C4EF7D }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0ECE84854D2849099767D764A17F7F99 }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
+      - uses: azure/webapps-deploy@v3
         with:
           app-name: 'proyecto-negocio-de-superpoderes'
           slot-name: 'Production'
-          package: ./dist
+          package: ./react-app
+
