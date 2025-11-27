@@ -1,21 +1,67 @@
 import { useState, useEffect } from 'react';
-import products from "../components/products/productList/productList.jsx";
 import CartDrawer from "../components/cart/cartDrawer/cartDrawer.jsx";
-import categories from "./category.jsx";
 import UserMenu from '../components/user/userMenuHome.jsx';
 import { useCart } from '../hooks/useCart.js';
 import ProductGrid from '../components/products/productGrid.jsx';
 
 function Home() {
-    // Función para el carrito
+    // Estado del carrito
     const { cartItems, addToCart, updateQuantity, removeItem } = useCart();
 
+    // Estados de la UI
     const [searchTerm, setSearchTerm] = useState('');
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
+    // Estados para productos y categorías desde la API
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState(['Todos']);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Cargar productos desde la API
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('http://localhost:3000/products');
+                
+                if (!response.ok) {
+                    throw new Error('Error al cargar los productos');
+                }
+                
+                const data = await response.json();
+                
+                // Transformar los datos de la API al formato esperado
+                const transformedProducts = data.map(producto => ({
+                    id: producto.id,
+                    name: producto.nombre,
+                    price: producto.precio,
+                    category: producto.Categorium?.nombre || 'Sin categoría',
+                    image: producto.imagen || '📦',
+                    featured: producto.destacado || false,
+                    description: producto.descripcion || ''
+                }));
+                
+                setProducts(transformedProducts);
+                
+                // Extraer categorías únicas
+                const uniqueCategories = ['Todos', ...new Set(transformedProducts.map(p => p.category))];
+                setCategories(uniqueCategories);
+                
+                setError(null);
+            } catch (err) {
+                console.error('Error al cargar productos:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     // Obtener productos destacados
     const featuredProducts = products.filter(product => product.featured === true);
@@ -24,7 +70,6 @@ function Home() {
     useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm, selectedCategory]);
-
 
     const getTotalItems = () => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -65,6 +110,37 @@ function Home() {
             setCurrentPage(currentPage + 1);
         }
     };
+
+    // Mostrar estado de carga
+    if (loading) {
+        return (
+            <div className="app">
+                <div className="container" style={{ textAlign: 'center', padding: '100px 20px' }}>
+                    <h2>Cargando productos...</h2>
+                    <p>⏳ Por favor espera un momento</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Mostrar error si ocurre
+    if (error) {
+        return (
+            <div className="app">
+                <div className="container" style={{ textAlign: 'center', padding: '100px 20px' }}>
+                    <h2>❌ Error al cargar productos</h2>
+                    <p>{error}</p>
+                    <button 
+                        className="cta-btn" 
+                        onClick={() => window.location.reload()}
+                        style={{ marginTop: '20px' }}
+                    >
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="app">
@@ -162,12 +238,18 @@ function Home() {
                     <div className="pagination-info">
                         <p>
                             Mostrando {getCurrentPageProducts().length} de {filteredProducts.length} productos
-                            (Página {currentPage} de {totalPages})
+                            {totalPages > 0 && ` (Página ${currentPage} de ${totalPages})`}
                         </p>
                     </div>
 
-                    {/* El Grid y las Cards de los productos, aun funciona con la barra */}
-                    <ProductGrid getCurrentPageProducts={getCurrentPageProducts} addToCart={addToCart}/>
+                    {/* Grid de productos */}
+                    {filteredProducts.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                            <p>No se encontraron productos que coincidan con tu búsqueda.</p>
+                        </div>
+                    ) : (
+                        <ProductGrid getCurrentPageProducts={getCurrentPageProducts} addToCart={addToCart}/>
+                    )}
 
                     {/* Controles de paginación */}
                     {totalPages > 1 && (
