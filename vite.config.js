@@ -17,5 +17,11 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@layouts': path.resolve(__dirname, 'src/layouts'),
     }
-  }
+  },
+  build: {
+    rollupOptions: {
+      input: path.resolve(__dirname, 'index.html'),
+    },
+  },
+  root: '.',
 })
