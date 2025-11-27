@@ -1,29 +1,50 @@
-import { useEffect, useMemo, useState } from "react";
-import { userService } from "../../services/user.service";
+export default async function useUsers() {
+  const URL = "http://localhost:3000";
 
-export function useUsers() {
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [q, setQ] = useState("");
+  // async function GetUsers() {
+  //   const response = await fetch(URL + "/users");
+  //   const data = await response.json();
+  //   return data
+  // }
 
-  useEffect(() => {
-    userService.list().then((u) => { setUsers(u); setLoading(false); });
-  }, []);
+  // async function CreateUser(payload) {
+  //   const response = await fetch(URL + "/users", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: payload
+  //   });
+  //   return response;
+  // }
 
-  const filtered = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    if (!t) return users;
-    return users.filter(u =>
-      u.id.toLowerCase().includes(t) ||
-      u.name.toLowerCase().includes(t) ||
-      u.lastName.toLowerCase().includes(t)
-    );
-  }, [users, q]);
+  // async function DeleteUser(id) {
+  //   const response = await fetch(`${URL}/users/${id}`, {
+  //     method: "DELETE"
+  //   });
+  //   return response
+  // }
 
-  const toggleActive = async (id) => {
-    const updated = await userService.toggleActive(id);
-    setUsers(prev => prev.map(u => (u.id === updated.id ? updated : u)));
-  };
+  async function LoginUser(payload) {
+    // Usar el endpoint de login que valida con bcrypt
+    const response = await fetch(URL + '/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload
+    });
 
-  return { loading, users: filtered, setQ, q, toggleActive };
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Error al iniciar sesión');
+    }
+
+    const usuario = await response.json();
+    console.warn(usuario)
+    return usuario
+  }
+
+  return {LoginUser}
+  // return { GetUsers, CreateUser, DeleteUser, LoginUser }
 }
