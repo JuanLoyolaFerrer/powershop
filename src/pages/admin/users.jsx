@@ -1,21 +1,114 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useUsers } from "../../hooks/api/useUsers";
+import { useState, useEffect } from "react";
 import { usePagination } from "../../hooks/usePagination";
 
-
 export default function AdminUsers() {
-  const { loading, users, q, setQ, toggleActive } = useUsers();
-  const { data, page, pages, setPage, total } = usePagination(users, 10);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [q, setQ] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    password: ""
+  });
   
+  const filteredUsers = users.filter(u => 
+    u.id.toString().includes(q.toLowerCase()) ||
+    (u.nombre && u.nombre.toLowerCase().includes(q.toLowerCase())) ||
+    (u.email && u.email.toLowerCase().includes(q.toLowerCase()))
+  );
+  
+  const { data, page, pages, setPage, total } = usePagination(filteredUsers, 10);
+  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/users");
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleFilterChange = (e) => {
     setQ(e.target.value);
     setPage(1);
   };
 
+  const handleViewUser = (user) => {
+    setSelectedUser(user);
+    setShowModal(true);
+  };
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm("¿Estás seguro de eliminar este usuario?")) return;
+    
+    try {
+      const response = await fetch(`http://localhost:3000/users/${id}`, {
+        method: "DELETE"
+      });
+      
+      if (response.ok) {
+        alert("Usuario eliminado correctamente");
+        fetchUsers();
+      } else {
+        alert("Error al eliminar usuario");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al eliminar usuario");
+    }
+  };
+
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.nombre || !formData.email || !formData.password) {
+      alert("Por favor completa todos los campos");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert("Usuario creado correctamente");
+        setShowCreateModal(false);
+        setFormData({ nombre: "", email: "", password: "" });
+        fetchUsers();
+      } else {
+        alert("Error al crear usuario");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al crear usuario");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
     <div style={{ padding: "40px", color: "#fff" }}>
-      {/* Título + botón a usuarios registrados */}
       <div
         style={{
           display: "flex",
@@ -24,28 +117,28 @@ export default function AdminUsers() {
           marginBottom: "20px",
         }}
       >
-        <h1 style={{ fontSize: "32px" }}>Usuarios con Orden</h1>
-
+        <h1 style={{ fontSize: "32px" }}>Usuarios</h1>
+        
         <button
-          onClick={() => navigate("/admin/usersRegistered")}
+          onClick={() => setShowCreateModal(true)}
           style={{
-            padding: "8px 14px",
-            borderRadius: "999px",
+            padding: "10px 20px",
+            borderRadius: "8px",
             border: "none",
             cursor: "pointer",
-            background:
-              "linear-gradient(90deg, #22c55e, #06b6d4)",
+            background: "linear-gradient(90deg, #22c55e, #06b6d4)",
             color: "#fff",
             fontWeight: "600",
-            boxShadow: "0 0 10px rgba(0,0,0,0.4)",
+            fontSize: "14px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
           }}
         >
-          Ver usuarios registrados
+          ➕ Crear Usuario
         </button>
       </div>
 
       <input
-        placeholder="Filtrar por ID / nombre / apellido"
+        placeholder="Filtrar por ID / nombre / email"
         value={q}
         onChange={handleFilterChange}
         style={{
@@ -72,30 +165,16 @@ export default function AdminUsers() {
           >
             <thead>
               <tr>
-                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>
-                  ID
-                </th>
-                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>
-                  Nombre
-                </th>
-                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>
-                  Email
-                </th>
-                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>
-                  Estado
-                </th>
-                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>
-                  Acciones
-                </th>
+                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>ID</th>
+                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>Nombre</th>
+                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>Email</th>
+                <th style={{ borderBottom: "1px solid #555", padding: "8px" }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {data.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={5}
-                    style={{ padding: "12px", textAlign: "center" }}
-                  >
+                  <td colSpan={4} style={{ padding: "12px", textAlign: "center" }}>
                     No hay usuarios
                   </td>
                 </tr>
@@ -104,49 +183,43 @@ export default function AdminUsers() {
               {data.map((u) => (
                 <tr key={u.id}>
                   <td style={{ borderBottom: "1px solid #333", padding: "8px" }}>
-                    <Link
-                      to={`/admin/users/${u.id}`}
-                      style={{
-                        color: "#4fd1ff",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                        fontWeight: "600",
-                      }}
-                    >
-                      {u.id}
-                    </Link>
+                    {u.id}
                   </td>
-
-                  <td
-                    style={{ borderBottom: "1px solid #333", padding: "8px" }}
-                  >
-                    {u.name} {u.lastName}
+                  <td style={{ borderBottom: "1px solid #333", padding: "8px" }}>
+                    {u.nombre || "Sin nombre"}
                   </td>
-                  <td
-                    style={{ borderBottom: "1px solid #333", padding: "8px" }}
-                  >
-                    {u.email}
+                  <td style={{ borderBottom: "1px solid #333", padding: "8px" }}>
+                    {u.email || "Sin email"}
                   </td>
-                  <td
-                    style={{ borderBottom: "1px solid #333", padding: "8px" }}
-                  >
-                    {u.active ? "Activo" : "Inactivo"}
-                  </td>
-                  <td
-                    style={{ borderBottom: "1px solid #333", padding: "8px" }}
-                  >
+                  <td style={{ borderBottom: "1px solid #333", padding: "8px" }}>
                     <button
-                      onClick={() => toggleActive(u.id)}
+                      onClick={() => handleViewUser(u)}
                       style={{
-                        padding: "4px 10px",
+                        padding: "6px 12px",
                         borderRadius: "6px",
                         border: "none",
                         cursor: "pointer",
-                        background: u.active ? "#ff4b6e" : "#21c55d",
+                        background: "#3b82f6",
                         color: "#fff",
+                        marginRight: "8px",
+                        fontSize: "13px",
                       }}
                     >
-                      {u.active ? "Desactivar" : "Activar"}
+                      👁️ Ver
+                    </button>
+                    <button
+                      onClick={() => handleDeleteUser(u.id)}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "6px",
+                        border: "none",
+                        cursor: "pointer",
+                        background: "#ef4444",
+                        color: "#fff",
+                        fontSize: "13px",
+                      }}
+                    >
+                      🗑️ Eliminar
                     </button>
                   </td>
                 </tr>
@@ -180,10 +253,227 @@ export default function AdminUsers() {
                 {n}
               </button>
             ))}
-
             <span style={{ marginLeft: "auto" }}>Total: {total}</span>
           </div>
         </>
+      )}
+
+      {/* Modal Ver Usuario */}
+      {showModal && selectedUser && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            style={{
+              background: "#1f2937",
+              padding: "30px",
+              borderRadius: "12px",
+              minWidth: "400px",
+              maxWidth: "500px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 style={{ marginBottom: "20px", fontSize: "24px" }}>
+              Detalles del Usuario
+            </h2>
+            
+            <div style={{ marginBottom: "15px" }}>
+              <strong style={{ color: "#9ca3af" }}>ID:</strong>
+              <p style={{ marginTop: "5px", fontSize: "16px" }}>{selectedUser.id}</p>
+            </div>
+            
+            <div style={{ marginBottom: "15px" }}>
+              <strong style={{ color: "#9ca3af" }}>Nombre:</strong>
+              <p style={{ marginTop: "5px", fontSize: "16px" }}>
+                {selectedUser.nombre || "Sin nombre"}
+              </p>
+            </div>
+            
+            <div style={{ marginBottom: "15px" }}>
+              <strong style={{ color: "#9ca3af" }}>Email:</strong>
+              <p style={{ marginTop: "5px", fontSize: "16px" }}>
+                {selectedUser.email || "Sin email"}
+              </p>
+            </div>
+
+            {selectedUser.createdAt && (
+              <div style={{ marginBottom: "15px" }}>
+                <strong style={{ color: "#9ca3af" }}>Fecha de creación:</strong>
+                <p style={{ marginTop: "5px", fontSize: "16px" }}>
+                  {new Date(selectedUser.createdAt).toLocaleString()}
+                </p>
+              </div>
+            )}
+            
+            <button
+              onClick={() => setShowModal(false)}
+              style={{
+                marginTop: "20px",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                border: "none",
+                cursor: "pointer",
+                background: "#4b5563",
+                color: "#fff",
+                width: "100%",
+                fontSize: "14px",
+              }}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Crear Usuario */}
+      {showCreateModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowCreateModal(false)}
+        >
+          <div
+            style={{
+              background: "#1f2937",
+              padding: "30px",
+              borderRadius: "12px",
+              minWidth: "400px",
+              maxWidth: "500px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 style={{ marginBottom: "20px", fontSize: "24px" }}>
+              Crear Nuevo Usuario
+            </h2>
+            
+            <form onSubmit={handleCreateUser}>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", marginBottom: "5px", color: "#9ca3af" }}>
+                  Nombre:
+                </label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid #4b5563",
+                    background: "#374151",
+                    color: "#fff",
+                    fontSize: "14px",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", marginBottom: "5px", color: "#9ca3af" }}>
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid #4b5563",
+                    background: "#374151",
+                    color: "#fff",
+                    fontSize: "14px",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", marginBottom: "5px", color: "#9ca3af" }}>
+                  Contraseña:
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid #4b5563",
+                    background: "#374151",
+                    color: "#fff",
+                    fontSize: "14px",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "none",
+                    cursor: "pointer",
+                    background: "linear-gradient(90deg, #22c55e, #06b6d4)",
+                    color: "#fff",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Crear
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  style={{
+                    flex: 1,
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    border: "none",
+                    cursor: "pointer",
+                    background: "#4b5563",
+                    color: "#fff",
+                    fontSize: "14px",
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

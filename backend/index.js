@@ -2,6 +2,13 @@ const express = require("express");
 const app = express();
 const {Categoria,Producto,Usuario,Orden,OrdenProducto} = require("./models")
 const sequelize = require("./database/database.js")
+const cors = require("cors");
+
+// Middlewares
+app.use(cors()); // ✅ Esto habilita CORS
+app.use(express.json());
+
+// ... resto de tu código
 
 // Middleware para parsear JSON
 app.use(express.json());
