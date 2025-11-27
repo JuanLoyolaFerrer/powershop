@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const {Category,Product,User} = require("./models")
+const sequelize = require("./database.js")
 
 // USERS
 app.get("/users", async (req, res) => {
@@ -37,7 +38,7 @@ app.post("/products", async (req, res) => {
   res.json(newProduct);
 });
 
-// ------------------------ INICIO -------------------------
+// INICIO 
 async function start() {
   try {
     await sequelize.authenticate();

@@ -1,7 +1,11 @@
-import { Sequelize } from "sequelize"
-export const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD,
+const Sequelize = require('sequelize');
+const dontenv = require("dotenv")
+
+dontenv.config()
+
+const sequelize = new Sequelize(process.env.PGDATABASE, process.env.PGUSER, process.env.PGPASSWORD,
 {
-    host: process.env.DB_HOST,
+    host: process.env.PGHOST,
     dialect: "postgres",
     dialectOptions: {
         ssl: {
@@ -10,3 +14,5 @@ export const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER,
         }
     }
 })
+
+module.exports = sequelize
