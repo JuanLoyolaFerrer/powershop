@@ -27,6 +27,11 @@ jobs:
           cd backend
           npm ci --production
       
+      - name: Create deployment package
+        run: |
+          cd backend
+          zip -r ../deploy.zip . -x "*.git*"
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -35,8 +40,5 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8F7796E29903409B9BE23E8F554162DE }}
       
       - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'powershopbackend'
-          slot-name: 'Production'
-          package: ./backend
+        run: |
+          az webapp deploy --resource-group powershopfinal --name powershopbackend --src-path deploy.zip --type zip
