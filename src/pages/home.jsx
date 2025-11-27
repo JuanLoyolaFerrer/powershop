@@ -79,7 +79,7 @@ function Home() {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesCategory && matchesSearch;
     });
-
+    
     // Calcular páginas
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
