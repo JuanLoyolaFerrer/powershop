@@ -1,29 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
-import { userService } from "../../services/user.service";
+export default function useUsers() {
+  const URL = "http://localhost:3000";
 
-export function useUsers() {
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [q, setQ] = useState("");
+  async function LoginUser(body) {
+    // Usar el endpoint de login que valida con bcrypt
+    const response = await fetch(URL + '/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body
+    });
 
-  useEffect(() => {
-    userService.list().then((u) => { setUsers(u); setLoading(false); });
-  }, []);
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Error al iniciar sesión');
+    }
 
-  const filtered = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    if (!t) return users;
-    return users.filter(u =>
-      u.id.toLowerCase().includes(t) ||
-      u.name.toLowerCase().includes(t) ||
-      u.lastName.toLowerCase().includes(t)
-    );
-  }, [users, q]);
+    const usuario = await response.json();
+    console.warn(usuario)
+    return usuario
+  }
 
-  const toggleActive = async (id) => {
-    const updated = await userService.toggleActive(id);
-    setUsers(prev => prev.map(u => (u.id === updated.id ? updated : u)));
-  };
 
-  return { loading, users: filtered, setQ, q, toggleActive };
+
+  return {LoginUser}
 }
